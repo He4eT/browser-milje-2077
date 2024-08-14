@@ -8,23 +8,11 @@
         body, html {
             margin: 0;
             padding: 0;
-        }
-
-        body {
-            display: flex;
-            justify-content: center;
             background: gray;
-        }
-
-        canvas {
-            transform: translateY(-50%) rotate(45deg);
-            filter: drop-shadow(0px 0px 10px rgba(60,60,60,0.5));
         }
     </style>
 </head>
 <body>
-    <canvas id="carpetCanvas" width="512" height="512"></canvas>
-
     <script>
         // LCG using GCC's constants
         // https://en.wikipedia.org/wiki/Linear_congruential_generator
@@ -69,7 +57,7 @@
                     }
                 }
             }
-            return matrix.flat()
+            return matrix
         }
 
         // https://stackoverflow.com/questions/3448347/how-to-scale-an-imagedata-in-html-canvas
@@ -95,28 +83,53 @@
             return scaled
         }
 
-        const drawOnCanvas = (matrix, size) => {
-            const canvas = document.getElementById('carpetCanvas')
+        const getCanvas = (size) => {
+            const canvas = document.createElement('canvas')
+            canvas.width = size
+            canvas.height = size
+
+            Object.entries({
+                'position': 'fixed',
+                'top': '0%',
+                'left': '50%',
+                'margin': '0 auto',
+                'transform': 'translateY(-50%) translateX(-50%) rotate(45deg)',
+                'filter': 'drop-shadow(0px 0px 10px rgba(60,60,60,0.5))',
+                'zIndex': '9999',
+            }).forEach(([key, value]) => { canvas.style[key] = value })
+
+            return canvas
+        }
+
+        const matrixToCanvas = (matrix, size, scaleFactor) => {
+            const flatMatrix = matrix.flat()
+
+            const canvas = getCanvas(size * scaleFactor)
             const ctx = canvas.getContext('2d')
             const imageData = ctx.createImageData(size, size)
 
-            for (let i = 0; i < matrix.length; i++) {
-                const value = matrix[i] * 255
+
+            for (let i = 0; i < flatMatrix.length; i++) {
+                const value = flatMatrix[i] * 255
                 const index = i * 4
                 imageData.data[index + 0] = value // Red
                 imageData.data[index + 1] = value // Green
                 imageData.data[index + 2] = value // Blue
                 imageData.data[index + 3] = value ? 255 : 0 // Alpha (fully opaque)
             }
-            ctx.putImageData(scaleImageData(imageData, 16, ctx), 0, 0)
+            ctx.putImageData(scaleImageData(imageData, scaleFactor, ctx), 0, 0)
+            return canvas
         }
 
 
         const gridSize = 3
         const patternSize = 16
+        const scaleFactor = 16
         const randomSeed = new Date()
 
-        drawOnCanvas(generatePattern(patternSize, gridSize, randomSeed), patternSize * 2)
+        const pattern = generatePattern(patternSize, gridSize, randomSeed)
+        const miljeCanvas = matrixToCanvas(pattern, patternSize * 2, scaleFactor)
+        document.body.appendChild(miljeCanvas)
     </script>
 </body>
 </html>
