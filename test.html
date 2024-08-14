@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salfetka</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            background: gray;
+        }
+
+        canvas {
+            transform: translateY(-50%) rotate(45deg);
+            filter: drop-shadow(0px 0px 10px rgba(60,60,60,0.5));
+        }
+    </style>
+</head>
+<body>
+    <canvas id="carpetCanvas" width="512" height="512"></canvas>
+
+    <script>
+        // LCG using GCC's constants
+        // https://en.wikipedia.org/wiki/Linear_congruential_generator
+        const LCG = (seed) => {
+            let state = seed
+            const m = 0x80000000 // 2**31
+            const a = 1103515245
+            const c = 12345
+
+            return () => {
+                state = (a * state + c) % m
+                return state / (m - 1)
+            }
+        }
+
+        const generatePattern = (patternSize, gridSize, randomSeed) => {
+            const random = LCG(randomSeed)
+            const matrix = Array(patternSize * 2).fill(null)
+                .map(() => Array(patternSize * 2).fill(0))
+
+            const put = (x, y, value) => {
+                const last = patternSize * 2 - 1
+                matrix[x][y] = value
+                matrix[y][x] = value
+
+                matrix[x][last - y] = value
+                matrix[last - y][x] = value
+
+                matrix[last - x][y] = value
+                matrix[y][last - x] = value
+
+                matrix[last - y][last - x] = value
+                matrix[last - x][last - y] = value
+            }
+
+            for (let i = 0; i < patternSize; i++) {
+                for (let j = 0; j < patternSize; j++) {
+                    if ((i % gridSize === 0) || (j % gridSize === 0)) {
+                        put(i, j, 1)
+                    } else {
+                        put(i, j, Number(random() > 0.5))
+                    }
+                }
+            }
+            return matrix.flat()
+        }
+
+        // https://stackoverflow.com/questions/3448347/how-to-scale-an-imagedata-in-html-canvas
+        function scaleImageData(imageData, scale, ctx) {
+            const scaled = ctx.createImageData(imageData.width * scale, imageData.height * scale)
+            const subLine = ctx.createImageData(scale, 1).data
+            for (let row = 0; row < imageData.height; row++) {
+                for (let col = 0; col < imageData.width; col++) {
+                    const sourcePixel = imageData.data.subarray(
+                        (row * imageData.width + col) * 4,
+                        (row * imageData.width + col) * 4 + 4)
+                    for (let x = 0; x < scale; x++) {
+                        subLine.set(sourcePixel, x * 4)
+                    }
+                    for (let y = 0; y < scale; y++) {
+                        const destRow = row * scale + y
+                        const destCol = col * scale
+                        scaled.data.set(subLine, (destRow * scaled.width + destCol) * 4)
+                    }
+                }
+            }
+
+            return scaled
+        }
+
+        const drawOnCanvas = (matrix, size) => {
+            const canvas = document.getElementById('carpetCanvas')
+            const ctx = canvas.getContext('2d')
+            const imageData = ctx.createImageData(size, size)
+
+            for (let i = 0; i < matrix.length; i++) {
+                const value = matrix[i] * 255
+                const index = i * 4
+                imageData.data[index + 0] = value // Red
+                imageData.data[index + 1] = value // Green
+                imageData.data[index + 2] = value // Blue
+                imageData.data[index + 3] = value ? 255 : 0 // Alpha (fully opaque)
+            }
+            ctx.putImageData(scaleImageData(imageData, 16, ctx), 0, 0)
+        }
+
+
+        const gridSize = 3
+        const patternSize = 16
+        const randomSeed = new Date()
+
+        drawOnCanvas(generatePattern(patternSize, gridSize, randomSeed), patternSize * 2)
+    </script>
+</body>
+</html>
