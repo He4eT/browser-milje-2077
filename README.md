@@ -3,6 +3,8 @@
 This is a silly art project and a friendly tribute
 to the awesome [miljegen](https://github.com/miljegen/browser-milje) project.
 
+---
+
 Adds a milje tablecloth on top of your browser viewport,
 bringing a classic piece of Slavic home decor
 straight to your screen.
