@@ -1,16 +1,31 @@
-/**
- * Sorry, you are not allowed to use import in the content_script :c
- * Copy'n'paste here!
- */
-const storage = (browser ?? window.chrome)['storage']
+start()
 
 /* */
 
-storage.local.get(['params'])
-  .then(({params}) => params)
-  .catch(() => {})
-  .then(assureParams)
-  .then(run)
+function start () {
+  Promise.resolve()
+    .then(getParamsFromStorage)
+    .catch((e) => {
+      console.error(e)
+      console.log('An error occurred. Milje will use the default params.')
+      return {}
+    })
+    .then(assureParams)
+    .then(run)
+}
+
+/* Params */
+
+function getParamsFromStorage () {
+  /**
+   * Sorry, you are not allowed to use import in the content_script :c
+   * Copy'n'paste of storage here!
+   */
+  const storage = (browser ?? window.chrome)['storage']
+
+  return storage.local.get(['params'])
+    .then(({params}) => params)
+}
 
 function assureParams(params) {
   const assureNumber = (rawValue, defaultValue, min, max) => {
@@ -22,6 +37,7 @@ function assureParams(params) {
 
     return value
   }
+
   const randomSeed = assureNumber(params.randomSeed, 0, 0, Infinity)
 
   return {
@@ -91,6 +107,7 @@ function generatePattern(halfPatternSize, gridSize, randomSeed) {
       }
     }
   }
+
   return matrix
 }
 
