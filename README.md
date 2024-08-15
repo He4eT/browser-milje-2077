@@ -1,13 +1,13 @@
 # Browser Milje 2077
 
+This is a silly art project and a friendly tribute
+to the awesome [miljegen](https://github.com/miljegen/browser-milje) project.
+
 Adds a milje tablecloth on top of your browser viewport,
 bringing a classic piece of Slavic home decor
 straight to your screen.
 
 Now with the questionable aesthetics of a QR code!
-
-This is a friendly tribute
-to the awesome [miljegen](https://github.com/miljegen/browser-milje) project.
 
 ## How It Looks Like
 
