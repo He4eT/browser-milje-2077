@@ -1,3 +1,7 @@
+const browser = (globalThis.browser ?? globalThis.chrome)
+
+/* */
+
 start()
 
 /* */
@@ -12,18 +16,13 @@ function start () {
     })
     .then(assureParams)
     .then(run)
+    .then(setMessageListener)
 }
 
 /* Params */
 
 function getParamsFromStorage () {
-  /**
-   * Sorry, you are not allowed to use import in the content_script :c
-   * Copy'n'paste of storage here!
-   */
-  const storage = (globalThis.browser ?? globalThis.chrome)['storage']
-
-  return storage.local.get(['params'])
+  return browser.storage.local.get(['params'])
     .then(({params}) => params)
 }
 
@@ -56,6 +55,24 @@ function run({ randomSeed, halfPatternSize, scaleFactor, gridSize }) {
   const miljeCanvas = matrixToCanvas(pattern, halfPatternSize, scaleFactor)
 
   document.body.appendChild(miljeCanvas)
+  return miljeCanvas
+}
+
+function setMessageListener (miljeCanvas) {
+  if (!('runtime' in browser)) {
+    console.log('Milje 2077 extension cannot set up listener.')
+    return
+  }
+
+  browser.runtime.onMessage.addListener((message) => {
+    switch (message.command) {
+      case 'toggleMilje':
+        miljeCanvas.hidden = !miljeCanvas.hidden
+        break
+      default:
+        console.log('Milje 2077 extension recieved unsupported message.')
+    }
+  })
 }
 
 /* Parts */
