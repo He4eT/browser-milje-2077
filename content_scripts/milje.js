@@ -122,9 +122,9 @@ function getCanvas(size) {
     'position': 'fixed',
     'top': '0%',
     'left': '50%',
-    'margin': '0 auto',
     'transform': 'translateY(-50%) translateX(-50%) rotate(45deg)',
     'filter': 'drop-shadow(0px 0px 10px rgba(60,60,60,0.5))',
+    'pointerEvents': 'none',
     'zIndex': '9999',
   }).forEach(([key, value]) => { canvas.style[key] = value })
 
