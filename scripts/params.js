@@ -13,7 +13,7 @@ export const fields = [
 
 export function getParamsFromStorage () {
   return browser.storage.local.get(['params'])
-    .then(({params}) => params)
+    .then(({params}) => params ?? {})
 }
 
 export function setParamsToStorage (params) {

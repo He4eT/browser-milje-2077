@@ -23,7 +23,7 @@ function start () {
 
 function getParamsFromStorage () {
   return browser.storage.local.get(['params'])
-    .then(({params}) => params)
+    .then(({params}) => params ?? {})
 }
 
 function assureParams(params) {
@@ -169,7 +169,7 @@ function getCanvas(size) {
     'top': '0%',
     'left': '50%',
     'transform': 'translateY(-50%) translateX(-50%) rotate(45deg)',
-    'filter': 'drop-shadow(0px 0px 10px rgba(60,60,60,0.5))',
+    'filter': 'drop-shadow(5px 5px 10px rgba(60,60,60)) blur(1px)',
     'pointerEvents': 'none',
     'zIndex': '9999',
   }).forEach(([key, value]) => { canvas.style[key] = value })
