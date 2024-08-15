@@ -16,6 +16,10 @@ Now with the questionable aesthetics of a QR code!
 ![firefox](screenshots/firefox.png)
 ![chromium](screenshots/chromium.png)
 
+## Customisation
+
+Check the extension options page for pattern, size and color settings.
+
 ## Manual Installation
 
 You can load the unpacked WebExtension in your favorite browser.
