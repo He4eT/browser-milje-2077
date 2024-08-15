@@ -19,7 +19,7 @@ function start () {
     .then(setMessageListener)
 }
 
-/* Params */
+/* Params @see scripts/params.js */
 
 function getParamsFromStorage () {
   return browser.storage.local.get(['params'])
@@ -37,26 +37,33 @@ function assureParams(params) {
     return value
   }
 
-  const randomSeed = assureNumber(params.randomSeed)(0)(0, Infinity)
-
   return {
-    className: params.className ?? 'browser-milje-2077',
-    /**/
-    randomSeed: randomSeed || new Date(),
-    /**/
+    randomSeed: assureNumber(params.randomSeed)(0)(0, Infinity),
     halfPatternSize: assureNumber(params.halfPatternSize)(16)(0, Infinity),
     scaleFactor: assureNumber(params.scaleFactor)(16)(0, Infinity),
     gridSize: assureNumber(params.gridSize)(3)(0, Infinity),
   }
 }
 
+/* */
+
 function run({ randomSeed, halfPatternSize, scaleFactor, gridSize }) {
-  const pattern = generatePattern(halfPatternSize, gridSize, randomSeed)
-  const miljeCanvas = matrixToCanvas(pattern, halfPatternSize, scaleFactor)
+  const pattern = generatePattern(
+    halfPatternSize,
+    gridSize,
+    randomSeed || new Date(),
+  )
+  const miljeCanvas = matrixToCanvas(
+    pattern,
+    halfPatternSize,
+    scaleFactor,
+  )
 
   document.body.appendChild(miljeCanvas)
   return miljeCanvas
 }
+
+/* */
 
 function setMessageListener (miljeCanvas) {
   if (!('runtime' in browser)) {
