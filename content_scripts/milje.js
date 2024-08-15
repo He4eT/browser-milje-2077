@@ -61,16 +61,20 @@ function run({
   green,
   blue,
 }) {
-  const pattern = generatePattern(
+  const pattern = generatePattern({
     halfPatternSize,
     gridSize,
-    randomSeed || new Date(),
-  )
-  const miljeCanvas = matrixToCanvas(
+    randomSeed: randomSeed || new Date(),
+    density,
+  })
+  const miljeCanvas = matrixToCanvas({
     pattern,
     halfPatternSize,
     scaleFactor,
-  )
+    red,
+    green,
+    blue,
+  })
 
   document.body.appendChild(miljeCanvas)
   return miljeCanvas
@@ -115,7 +119,12 @@ const LCG = (seed) => {
 
 /* Pattern generation */
 
-function generatePattern(halfPatternSize, gridSize, randomSeed) {
+function generatePattern({
+  halfPatternSize,
+  gridSize,
+  randomSeed,
+  density,
+}) {
   const random = LCG(randomSeed)
   const matrix = Array(halfPatternSize * 2).fill(null)
     .map(() => Array(halfPatternSize * 2).fill(0))
@@ -140,7 +149,7 @@ function generatePattern(halfPatternSize, gridSize, randomSeed) {
       if ((i % gridSize === 0) || (j % gridSize === 0)) {
         put(i, j, 1)
       } else {
-        put(i, j, Number(random() > 0.5))
+        put(i, j, Number(random() > density))
       }
     }
   }
@@ -191,8 +200,15 @@ function scaleImageData(imageData, scale, ctx) {
   return scaled
 }
 
-function matrixToCanvas(matrix, halfPatternSize, scaleFactor) {
-  const flatMatrix = matrix.flat()
+function matrixToCanvas({
+  pattern,
+  halfPatternSize,
+  scaleFactor,
+  red,
+  green,
+  blue,
+}) {
+  const flatMatrix = pattern.flat()
   const canvasSize = halfPatternSize * 2
 
   const canvas = getCanvas(canvasSize * scaleFactor)
@@ -200,12 +216,11 @@ function matrixToCanvas(matrix, halfPatternSize, scaleFactor) {
 
   const imageData = ctx.createImageData(canvasSize, canvasSize)
   for (let i = 0; i < flatMatrix.length; i++) {
-    const value = flatMatrix[i] * 255
     const index = i * 4
-    imageData.data[index + 0] = value // Red
-    imageData.data[index + 1] = value // Green
-    imageData.data[index + 2] = value // Blue
-    imageData.data[index + 3] = value ? 255 : 0 // Alpha
+    imageData.data[index + 0] = red
+    imageData.data[index + 1] = green
+    imageData.data[index + 2] = blue
+    imageData.data[index + 3] = flatMatrix[i] ? 255 : 0 // Alpha
   }
 
   const scaledImageData = scaleImageData(imageData, scaleFactor, ctx)
