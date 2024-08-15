@@ -8,6 +8,5 @@ document.getElementById('toggleMiljeButton').onclick = () => {
 }
 
 document.getElementById('openSettingsButton').onclick = () => {
-  browser.storage.local.set({'params': {scaleFactor: 16}})
-  console.log('openSettingsButton')
+  browser.runtime.openOptionsPage()
 }

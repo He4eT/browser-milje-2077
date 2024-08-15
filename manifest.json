@@ -10,6 +10,9 @@
     "js": ["content_scripts/milje.js"],
     "matches": ["<all_urls>", "file:///"]
   }],
+  "options_ui": {
+    "page": "pages/options/options.html"
+  },
   "permissions": [
     "storage"
   ]
