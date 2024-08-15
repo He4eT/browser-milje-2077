@@ -1,6 +1,6 @@
 # Browser Milje 2077
 
-This is a silly art project and a friendly tribute
+This is a silly art exercise and a friendly tribute
 to the awesome [miljegen](https://github.com/miljegen/browser-milje) project.
 
 ---
