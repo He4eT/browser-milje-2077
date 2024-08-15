@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "browser-milje-2077",
+  "description": "Adds a pixelated milje table cloth on top of your browser viewport",
+  "version": "0.0.1",
+  "action": {
+    "default_popup": "pages/popup/popup.html"
+  },
+  "content_scripts": [{
+    "js": ["content_scripts/milje.js"],
+    "matches": ["<all_urls>", "file:///"]
+  }],
+  "permissions": [
+    "storage"
+  ]
+}
