@@ -42,12 +42,25 @@ function assureParams(params) {
     halfPatternSize: assureNumber(params.halfPatternSize)(16)(0, Infinity),
     scaleFactor: assureNumber(params.scaleFactor)(16)(0, Infinity),
     gridSize: assureNumber(params.gridSize)(3)(0, Infinity),
+    density: assureNumber(params.density)(0.5)(0, 1),
+    red: assureNumber(params.red)(255)(0, 255),
+    green: assureNumber(params.green)(255)(0, 255),
+    blue: assureNumber(params.blue)(255)(0, 255),
   }
 }
 
 /* */
 
-function run({ randomSeed, halfPatternSize, scaleFactor, gridSize }) {
+function run({
+  randomSeed,
+  halfPatternSize,
+  scaleFactor,
+  gridSize,
+  density,
+  red,
+  green,
+  blue,
+}) {
   const pattern = generatePattern(
     halfPatternSize,
     gridSize,
