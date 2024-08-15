@@ -21,14 +21,14 @@ function getParamsFromStorage () {
    * Sorry, you are not allowed to use import in the content_script :c
    * Copy'n'paste of storage here!
    */
-  const storage = (browser ?? window.chrome)['storage']
+  const storage = (globalThis.browser ?? globalThis.chrome)['storage']
 
   return storage.local.get(['params'])
     .then(({params}) => params)
 }
 
 function assureParams(params) {
-  const assureNumber = (rawValue, defaultValue, min, max) => {
+  const assureNumber = (rawValue) => (defaultValue) => (min, max) => {
     let value = Number(rawValue)
 
     if (isNaN(value)) return defaultValue
@@ -38,16 +38,16 @@ function assureParams(params) {
     return value
   }
 
-  const randomSeed = assureNumber(params.randomSeed, 0, 0, Infinity)
+  const randomSeed = assureNumber(params.randomSeed)(0)(0, Infinity)
 
   return {
     className: params.className ?? 'browser-milje-2077',
     /**/
     randomSeed: randomSeed || new Date(),
     /**/
-    halfPatternSize: assureNumber(params.halfPatternSize, 16, 0, Infinity),
-    scaleFactor: assureNumber(params.scaleFactor, 16, 0, Infinity),
-    gridSize: assureNumber(params.gridSize, 3, 0, Infinity),
+    halfPatternSize: assureNumber(params.halfPatternSize)(16)(0, Infinity),
+    scaleFactor: assureNumber(params.scaleFactor)(16)(0, Infinity),
+    gridSize: assureNumber(params.gridSize)(3)(0, Infinity),
   }
 }
 
