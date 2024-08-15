@@ -179,20 +179,27 @@ function getCanvas(size) {
 
 /** @see https://stackoverflow.com/questions/3448347/how-to-scale-an-imagedata-in-html-canvas */
 function scaleImageData(imageData, scale, ctx) {
-  const scaled = ctx.createImageData(imageData.width * scale, imageData.height * scale)
+  const scaled = ctx.createImageData(
+    imageData.width * scale,
+    imageData.height * scale,
+  )
   const subLine = ctx.createImageData(scale, 1).data
   for (let row = 0; row < imageData.height; row++) {
     for (let col = 0; col < imageData.width; col++) {
       const sourcePixel = imageData.data.subarray(
         (row * imageData.width + col) * 4,
-        (row * imageData.width + col) * 4 + 4)
+        (row * imageData.width + col) * 4 + 4,
+      )
       for (let x = 0; x < scale; x++) {
         subLine.set(sourcePixel, x * 4)
       }
       for (let y = 0; y < scale; y++) {
         const destRow = row * scale + y
         const destCol = col * scale
-        scaled.data.set(subLine, (destRow * scaled.width + destCol) * 4)
+        scaled.data.set(
+          subLine,
+          (destRow * scaled.width + destCol) * 4,
+        )
       }
     }
   }
