@@ -1,4 +1,4 @@
-const browser = (globalThis.browser ?? globalThis.chrome)
+const browser = (globalThis.browser ?? globalThis.chrome) ?? {}
 
 /* */
 
